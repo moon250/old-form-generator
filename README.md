@@ -1,4 +1,4 @@
-# form-generator [![Build Status](https://travis-ci.com/moon250/formgenerator.svg?branch=master)](https://travis-ci.com/moon250/formgenerator)
+# FormGenerator [![Build Status](https://travis-ci.com/moon250/formgenerator.svg?branch=master)](https://travis-ci.com/moon250/formgenerator)
 
 FormGenerator is a class generates forms in a very simple way.
 
@@ -10,13 +10,13 @@ FormGenerator is a class generates forms in a very simple way.
 ## Basic usage
 Start by instancing the FormGenerator class.
 ```php
-// require the autoload (when use composer)
+// require the autoloader (when use composer)
 require_once 'vendor/autoload.php';
 $form = new \FormGenerator\FormGenerator();
 ```
 
-Next you can use this object for add some fields with add method. This method took 2 parameters, one is the name and
-the second parameter, the type, is optionnaly. Default type is text.
+Next you can use this object to add some fields with "add" method. This method took 2 parameters, one is the name and
+the second parameter is the type wich is optionnaly. Default type is text.
 
 ```php
 $form = new \FormGenerator\FormGenerator();
@@ -25,7 +25,7 @@ $form->add('username');
 // Add method is fluent
 $form->add('username')->add('name');
 ```
-For generate the form, use the "generate" method
+To generate the form, use the "generate" method
 ```php
 $form = new \FormGenerator\FormGenerator();
 
@@ -70,8 +70,7 @@ $form->add('email')->generate();
 ```
 
 ## Config
-Form-generator is fully configurable. You can for example disable the type detection with name.
-
+Form-generator is fully configurable. You can for example disable the type detection with the name.
 ```php
 $config = new \FormGenerator\FormConfig();
 $config->set('TYPE_DETECTION', false);
@@ -80,4 +79,18 @@ $form = new \FormGenerator\FormGenerator($config);
 // <input type="text" id="field-email" name="email" value="">
 $form->add('email')->generate();
 ```
- 
+You can use "get" method for see the value of a key
+```php
+$config = new \FormGenerator\FormConfig();
+$config->get('TYPE_DETECTION'); // true
+```
+
+Key names are case-insensitive.
+
+```php
+$config = new \FormGenerator\FormConfig();
+$config->set('type_detection', false);
+
+// Echo "true"
+echo $config->get('TYPE_DETECTION');
+```

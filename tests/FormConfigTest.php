@@ -37,4 +37,10 @@ class FormConfigTest extends TestCase
         $this->config->set('TYPE_DETECTION', false);
         $this->assertFalse($this->config->get('TYPE_DETECTION'));
     }
+
+    public function testSetConfigIsCaseInsensitive()
+    {
+        $this->config->set('type_detection', true);
+        $this->assertTrue($this->config->get('TYPE_DETECTION'));
+    }
 }

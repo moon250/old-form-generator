@@ -85,4 +85,29 @@ HTML;
         $html = '<input type="text" id="field-email" name="email" value="">';
         $this->assertSame($html, $form);
     }
+
+    public function testAddFieldWithOption()
+    {
+        $form = $this->form->add('username', null, [
+            'label'       => "Nom d'utilisateur"
+        ])->generate();
+        $html = <<<HTML
+<label for="field-username">Nom d'utilisateur</label>
+<input type="text" id="field-username" name="username" value="">
+HTML;
+        $this->assertSame($html, $form);
+    }
+
+    public function testAddFieldWithMultipleOptions()
+    {
+        $form = $this->form->add('username', null, [
+            'label'       => "Nom d'utilisateur",
+            'placeholder' => 'Un placeholder'
+        ])->generate();
+        $html = <<<HTML
+<label for="field-username">Nom d'utilisateur</label>
+<input type="text" id="field-username" name="username" value="" placeholder="Un placeholder">
+HTML;
+        $this->assertSame($html, $form);
+    }
 }

@@ -52,12 +52,13 @@ class FormGenerator
     /**
      * Add a field to the form.
      *
-     * @param string                        $name Name of the field
-     * @param string|FormTypeInterface|null $type Type of the field (default is text)
+     * @param string                        $name    Name of the field
+     * @param string|FormTypeInterface|null $type    Type of the field (default is text)
+     * @param string[]                      $options Addtional options
      *
      * @return FormGenerator
      */
-    public function add(string $name, $type = null): self
+    public function add(string $name, $type = null, array $options = []): self
     {
         $type = isset($type) ? $type : $this->getType($name);
         $field = [
@@ -72,6 +73,7 @@ class FormGenerator
                 $field['options'] = $type->getData();
             }
         }
+        $field = $this->mergeOptions($field, $options);
         $this->fields[] = $field;
 
         return $this;
@@ -111,17 +113,36 @@ HTML;
     }
 
     /**
+     * Generate a label with correct parameters.
+     *
+     * @param string[] $field Aray contains parameters
+     */
+    private function label(array $field): string
+    {
+        return <<<HTML
+<label for="{$field['id']}">{$field['label']}</label>\n
+HTML;
+    }
+
+    /**
      * Generate an input with parameters given in parameters.
      *
      * @param string[] $field Arrays contains parameters
      */
     private function input(array $field): string
     {
-        return str_replace("\n", '', "<input 
+        $return = '';
+        if (isset($field['label'])) {
+            $return .= $this->label($field);
+        }
+        $placeholder = isset($field['placeholder']) ? " placeholder=\"{$field['placeholder']}\"" : '';
+        $return .= str_replace("\n", '', "<input 
 type=\"{$field['type']}\" 
 id=\"{$field['id']}\" 
 name=\"{$field['name']}\" 
-value=\"{$field['value']}\">");
+value=\"{$field['value']}\"{$placeholder}>");
+
+        return $return;
     }
 
     /**
@@ -141,5 +162,25 @@ value=\"{$field['value']}\">");
         }
 
         return 'text';
+    }
+
+    /**
+     * Merge options into field.
+     *
+     * @param mixed[]  $field   The field
+     * @param string[] $options Options given in parameters in add method
+     *
+     * @return mixed[]
+     */
+    private function mergeOptions(array $field, array $options): array
+    {
+        if (isset($options['label'])) {
+            $field['label'] = $options['label'];
+        }
+        if (isset($options['placeholder'])) {
+            $field['placeholder'] = $options['placeholder'];
+        }
+
+        return $field;
     }
 }
