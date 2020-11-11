@@ -1,6 +1,6 @@
 # form-generator [![Build Status](https://travis-ci.com/moon250/formgenerator.svg?branch=master)](https://travis-ci.com/moon250/formgenerator)
 
-FormGenerator is a class who generate form simply
+FormGenerator is a class generates forms in a very simple way.
 
 # Table of contents
 1. [Basic usage](#Basic-Usage)
@@ -73,7 +73,9 @@ $form->add('email')->generate();
 Form-generator is fully configurable. You can for example disable the type detection with name.
 
 ```php
-$form = new \FormGenerator\FormGenerator();
+$config = new \FormGenerator\FormConfig();
+$config->set('TYPE_DETECTION', false);
+$form = new \FormGenerator\FormGenerator($config);
 
 // <input type="text" id="field-email" name="email" value="">
 $form->add('email')->generate();
