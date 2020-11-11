@@ -4,6 +4,7 @@ namespace FormGenerator;
 
 use FormGenerator\Types\FormTypeInterface;
 use function count;
+use function in_array;
 use function is_object;
 
 class FormGenerator
@@ -12,6 +13,41 @@ class FormGenerator
      * @var array[]
      */
     private array $fields;
+
+    /**
+     * @var string[]
+     */
+    private array $types = [
+        'button',
+        'checkbox',
+        'color',
+        'date',
+        'datetime-local',
+        'email',
+        'file',
+        'hidden',
+        'image',
+        'month',
+        'number',
+        'password',
+        'radio',
+        'range',
+        'reset',
+        'search',
+        'submit',
+        'tel',
+        'text',
+        'time',
+        'url',
+        'week'
+    ];
+
+    private FormConfig $config;
+
+    public function __construct(?FormConfig $config = null)
+    {
+        $this->config = null !== $config ? $config : new FormConfig();
+    }
 
     /**
      * Add a field to the form.
@@ -57,6 +93,7 @@ class FormGenerator
                 $form .= "\n";
             }
         }
+        $this->fields = [];
 
         return $form;
     }
@@ -94,10 +131,13 @@ value=\"{$field['value']}\">");
      */
     private function getType(string $name): string
     {
-        if (isset(explode('_', $name)[1])
-            && 'at' === explode('_', $name)[1]
-        ) {
-            return 'date';
+        if (true === $this->config->get('TYPE_DETECTION')) {
+            if (in_array($name, $this->types, true)) {
+                return $name;
+            }
+            if (isset(explode('_', $name)[1]) && 'at' === explode('_', $name)[1]) {
+                return 'date';
+            }
         }
 
         return 'text';
