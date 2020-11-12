@@ -28,7 +28,7 @@ class SelectType implements FormTypeInterface
     {
         $return = '';
         foreach ($this->options as $k => $option) {
-            $return .= "<option value=\"{$k}\">{$option}</option>";
+            $return .= "\n    <option value=\"{$k}\">{$option}</option>";
         }
 
         return $return;

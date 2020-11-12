@@ -19,7 +19,7 @@ class FormGeneratorTest extends TestCase
     public function testAddSimpleField()
     {
         $this->form->add('name');
-        $html = '<input type="text" id="field-name" name="name" value="">';
+        $html = '<input type="text" id="field-name" name="name" value="" required="">';
 
         $this->assertSame($html, $this->form->generate());
     }
@@ -29,22 +29,22 @@ class FormGeneratorTest extends TestCase
         $this->form
             ->add('username')
             ->add('name');
-        $html = '<input type="text" id="field-username" name="username" value="">
-<input type="text" id="field-name" name="name" value="">';
+        $html = '<input type="text" id="field-username" name="username" value="" required="">
+<input type="text" id="field-name" name="name" value="" required="">';
         $this->assertSame($html, $this->form->generate());
     }
 
     public function testAddFieldWithSpecifiedValue()
     {
         $this->form->add('test', 'email');
-        $html = '<input type="email" id="field-test" name="test" value="">';
+        $html = '<input type="email" id="field-test" name="test" value="" required="">';
         $this->assertSame($html, $this->form->generate());
     }
 
     public function testAutoDetectionCreatedAtType()
     {
         $this->form->add('created_at');
-        $html = '<input type="date" id="field-created_at" name="created_at" value="">';
+        $html = '<input type="date" id="field-created_at" name="created_at" value="" required="">';
         $this->assertSame($html, $this->form->generate());
     }
 
@@ -52,7 +52,10 @@ class FormGeneratorTest extends TestCase
     {
         $this->form->add('users', new SelectType(['jean', 'jane']));
         $html = <<<HTML
-<select id="field-users" name="users"><option value="0">jean</option><option value="1">jane</option></select>
+<select id="field-users" name="users" required="">
+    <option value="0">jean</option>
+    <option value="1">jane</option>
+</select>
 HTML;
         $this->assertSame($html, $this->form->generate());
     }
@@ -60,9 +63,9 @@ HTML;
     public function testGenerateClearGeneratedFields()
     {
         $form1 = $this->form->add('username')->generate();
-        $html = '<input type="text" id="field-username" name="username" value="">';
+        $html = '<input type="text" id="field-username" name="username" value="" required="">';
         $form2 = $this->form->add('user')->generate();
-        $html2 = '<input type="text" id="field-user" name="user" value="">';
+        $html2 = '<input type="text" id="field-user" name="user" value="" required="">';
         $this->assertSame($html, $form1);
         $this->assertSame($html2, $form2);
     }
@@ -70,9 +73,9 @@ HTML;
     public function testDetectNameForUseItInType()
     {
         $form1 = $this->form->add('email')->generate();
-        $html = '<input type="email" id="field-email" name="email" value="">';
+        $html = '<input type="email" id="field-email" name="email" value="" required="">';
         $form2 = $this->form->add('date')->generate();
-        $html2 = '<input type="date" id="field-date" name="date" value="">';
+        $html2 = '<input type="date" id="field-date" name="date" value="" required="">';
         $this->assertSame($html, $form1);
         $this->assertSame($html2, $form2);
     }
@@ -82,7 +85,7 @@ HTML;
         $config = new FormConfig();
         $config->set('TYPE_DETECTION', false);
         $form = (new FormGenerator($config))->add('email')->generate();
-        $html = '<input type="text" id="field-email" name="email" value="">';
+        $html = '<input type="text" id="field-email" name="email" value="" required="">';
         $this->assertSame($html, $form);
     }
 
@@ -93,7 +96,7 @@ HTML;
         ])->generate();
         $html = <<<HTML
 <label for="field-username">Nom d'utilisateur</label>
-<input type="text" id="field-username" name="username" value="">
+<input type="text" id="field-username" name="username" value="" required="">
 HTML;
         $this->assertSame($html, $form);
     }
@@ -106,8 +109,26 @@ HTML;
         ])->generate();
         $html = <<<HTML
 <label for="field-username">Nom d'utilisateur</label>
-<input type="text" id="field-username" name="username" value="" placeholder="Un placeholder">
+<input type="text" id="field-username" name="username" value="" placeholder="Un placeholder" required="">
 HTML;
         $this->assertSame($html, $form);
+    }
+
+    public function testRequiredField()
+    {
+        $this->form->add('name', null, [
+            'required' => true
+        ]);
+        $html = '<input type="text" id="field-name" name="name" value="" required="">';
+        $this->assertSame($html, $this->form->generate());
+    }
+
+    public function testAddClass()
+    {
+        $this->form->add('username', null, [
+            'class' => 'test'
+        ]);
+        $html = '<input type="text" id="field-username" name="username" value="" required="" class="test">';
+        $this->assertSame($html, $this->form->generate());
     }
 }

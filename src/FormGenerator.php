@@ -3,9 +3,6 @@
 namespace FormGenerator;
 
 use FormGenerator\Types\FormTypeInterface;
-use function count;
-use function in_array;
-use function is_object;
 
 class FormGenerator
 {
@@ -67,13 +64,13 @@ class FormGenerator
             'value' => '',
             'type'  => $type
         ];
-        if (is_object($type)) {
+        if (\is_object($type)) {
             $field['type'] = $type->getType();
             if ('select' === $field['type']) {
                 $field['options'] = $type->getData();
             }
         }
-        $field = $this->mergeOptions($field, $options);
+        $field = array_merge($field, $options);
         $this->fields[] = $field;
 
         return $this;
@@ -91,7 +88,7 @@ class FormGenerator
             } else {
                 $form = $form . $this->input($field);
             }
-            if (($key + 1) < count($this->fields)) {
+            if (($key + 1) < \count($this->fields)) {
                 $form .= "\n";
             }
         }
@@ -108,7 +105,7 @@ class FormGenerator
     private function select(array $field): string
     {
         return <<<HTML
-<select id="{$field['id']}" name="{$field['name']}">{$field['options']}</select>
+<select id="{$field['id']}" name="{$field['name']}" {$this->getRequired($field)}{$this->getClass($field)}>{$field['options']}\n</select>
 HTML;
     }
 
@@ -135,12 +132,17 @@ HTML;
         if (isset($field['label'])) {
             $return .= $this->label($field);
         }
-        $placeholder = isset($field['placeholder']) ? " placeholder=\"{$field['placeholder']}\"" : '';
+        $placeholder = isset($field['placeholder']) && is_string($field['placeholder'])
+            ? " placeholder=\"{$field['placeholder']}\""
+            : '';
         $return .= str_replace("\n", '', "<input 
 type=\"{$field['type']}\" 
 id=\"{$field['id']}\" 
 name=\"{$field['name']}\" 
-value=\"{$field['value']}\"{$placeholder}>");
+value=\"{$field['value']}\"
+{$placeholder} 
+{$this->getRequired($field)}
+{$this->getClass($field)}>");
 
         return $return;
     }
@@ -153,7 +155,7 @@ value=\"{$field['value']}\"{$placeholder}>");
     private function getType(string $name): string
     {
         if (true === $this->config->get('TYPE_DETECTION')) {
-            if (in_array($name, $this->types, true)) {
+            if (\in_array($name, $this->types, true)) {
                 return $name;
             }
             if (isset(explode('_', $name)[1]) && 'at' === explode('_', $name)[1]) {
@@ -165,22 +167,23 @@ value=\"{$field['value']}\"{$placeholder}>");
     }
 
     /**
-     * Merge options into field.
+     * Return if the field is required
      *
-     * @param mixed[]  $field   The field
-     * @param string[] $options Options given in parameters in add method
-     *
-     * @return mixed[]
+     * @param string[]|bool[] $field
+     * @return string
      */
-    private function mergeOptions(array $field, array $options): array
+    private function getRequired(array $field): string
     {
-        if (isset($options['label'])) {
-            $field['label'] = $options['label'];
-        }
-        if (isset($options['placeholder'])) {
-            $field['placeholder'] = $options['placeholder'];
-        }
+        return isset($field['required']) && false === $field['required'] ? '' : 'required=""';
+    }
 
-        return $field;
+    /**
+     * Return the class of the field
+     * @param string[] $field
+     * @return string
+     */
+    private function getClass(array $field): string
+    {
+        return isset($field['class']) && is_string($field['class']) ? " class=\"{$field['class']}\"" : '';
     }
 }

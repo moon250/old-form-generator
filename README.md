@@ -1,11 +1,11 @@
-# FormGenerator [![Build Status](https://travis-ci.com/moon250/formgenerator.svg?branch=master)](https://travis-ci.com/moon250/formgenerator)
+# FormGenerator [![Build Status](https://travis-ci.com/moon250/form-generator.svg?branch=master)](https://travis-ci.com/moon250/formgenerator)
 
-FormGenerator is a class generates forms in a very simple way.
+FormGenerator is a class that generates forms in a very simple way.
 
 # Table of contents
-1. [Basic usage](#Basic-Usage)
-2. [Types](#Types)
-3. [Config](#Config)
+- [Basic usage](#Basic-Usage)
+- [Types](#Types)
+- [Config](#Config)
 
 ## Basic usage
 Start by instancing the FormGenerator class.
@@ -15,8 +15,8 @@ require_once 'vendor/autoload.php';
 $form = new \FormGenerator\FormGenerator();
 ```
 
-Next you can use this object to add some fields with "add" method. This method took 2 parameters, one is the name and
-the second parameter is the type wich is optionnaly. Default type is text.
+Next, you can use this object to add some fields with the "add" method. This method took 2 parameters, one is the name, and
+the second parameter is an optional type. The default type is text.
 
 ```php
 $form = new \FormGenerator\FormGenerator();
@@ -38,7 +38,7 @@ echo $html;
 
 ## Types
 
-By default, the type is "text". You can change this by passed another parameter in the "add" method.
+By default, the type is "text". You can change this bypassed another parameter in the "add" method.
 
 ```php
 $form = new \FormGenerator\FormGenerator();
@@ -60,7 +60,7 @@ $form->add('created_at')->generate();
 $form->add('updated_at')->generate();
 ```
 
-If the name specified is a valid type and no type is specified in parameters, the name will be used in type.
+If the name specified is a valid type and no type was specified in parameters, the name will be used in type.
 
 ```php
 $form = new \FormGenerator\FormGenerator();
@@ -79,7 +79,7 @@ $form = new \FormGenerator\FormGenerator($config);
 // <input type="text" id="field-email" name="email" value="">
 $form->add('email')->generate();
 ```
-You can use "get" method for see the value of a key
+You can use "get" method to see the value of a key
 ```php
 $config = new \FormGenerator\FormConfig();
 $config->get('TYPE_DETECTION'); // true
