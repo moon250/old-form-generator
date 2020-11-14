@@ -1,22 +1,27 @@
-# FormGenerator [![Build Status](https://travis-ci.com/moon250/form-generator.svg?branch=master)](https://travis-ci.com/moon250/formgenerator)
+# FormGenerator 
+[![Build Status](https://travis-ci.com/moon250/form-generator.svg?branch=master)](https://travis-ci.com/moon250/formgenerator)
+[![Coverage Status](https://coveralls.io/repos/github/moon250/form-generator/badge.svg?branch=master)](https://coveralls.io/github/moon250/form-generator?branch=master)
 
 FormGenerator is a class that generates forms in a very simple way.
 
 # Table of contents
 - [Basic usage](#Basic-Usage)
 - [Types](#Types)
-- [Config](#Config)
-    - [Config Rules](#Config-Rules)
-    - [EMPTY_GENERATED_FIELD](#EMPTY_GENERATED_FIELD)
-    - [FORM_ACTION](#FORM_ACTION)
-    - [FORM_CLASS](#FORM_CLASS)
-    - [FORM_METHOD](#FORM_METHOD)
-    - [FORM_SUBMIT_VALUE](#FORM_SUBMIT_VALUE)
-    - [FULL_HTML_STRUCTURE](#FULL_HTML_STRUCTURE)
-    - [TYPE_DETECTION](#TYPE_DETECTION)
+- [Options](#Options)
+- [Configuration](#Configuration)
+    - [Configuration Rules](#Config-Rules)
+    - [empty_generated_field](#empty_generated_field)
+    - [form_action](#form_action)
+    - [form_class](#form_class)
+    - [form_method](#form_method)
+    - [form_submit](#form_submit)
+    - [form_submit_value](#form_submit_value)
+    - [full_html_structure](#full_html_structure)
+    - [type_detection](#type_detection)
+- [Examples](#Examples)
     
 
-## Basic usage
+## Basic Usage
 Start by instancing the FormGenerator class.
 ```php
 // require the autoloader (when use composer)
@@ -78,14 +83,38 @@ $form = new \FormGenerator\FormGenerator();
 $form->add('email')->generate();
 ```
 
-## Config
+## Options
+
+In the third parameter of the "add" method, you can pass an array of options.
+
+All the options are list here :
+
+| Option name | Usage | Value |
+|:-----------:|-------|-------|
+| class | Define the class of the field | ``string`` A class name |
+| label | Define the label for the field | ``string`` The label content |
+| placeholder | Define placeholder of the field | ``string`` The placeholder |
+| required | Define if the field is required | ``bool`` true / false (default to true) |
+| value | You can define the value of the field here | ``string`` The value of the field |
+
+Example :
+```php
+$form = new \FormGenerator\FormGenerator();
+
+// <input type="text" id="field-username" name="username" value="" required="" class="super-class">
+$form->add('username', null, [
+    'class' => 'super-class'
+])->generate();
+```
+
+## Configuration
 Form-generator is fully configurable. You can for example disable the type detection with the name.
 ```php
 $config = new \FormGenerator\FormConfig();
 $config->set('TYPE_DETECTION', false);
 $form = new \FormGenerator\FormGenerator($config);
 
-// <input type="text" id="field-email" name="email" value="">
+// <input type="text" id="field-email" name="email" value="" required="">
 $form->add('email')->generate();
 ```
 You can use "get" method to see the value of a key
@@ -100,8 +129,22 @@ Key names are case-insensitive.
 $config = new \FormGenerator\FormConfig();
 $config->set('type_detection', false);
 
-// Echo "true"
+// Echo "false"
 echo $config->get('TYPE_DETECTION');
+```
+
+You can also pass an array to the FormConfig constructor for define config rules.
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'TYPE_DETECTION' => false,
+    'EMPTY_GENERATED_FIELDS' => false
+]);
+
+// Echo "false"
+echo $config->get('TYPE_DETECTION');
+// Echo "false"
+echo $config->get('EMPTY_GENERATED_FIELDS');
 ```
 
 ### Config Rules
@@ -109,41 +152,44 @@ echo $config->get('TYPE_DETECTION');
 All the config rules can be changed are listed here :
 
 | Rule Name | Default value | Values can be attributed |
-|---|---|---|
-| EMPTY_GENERATED_FIELD | true | true / false |
-| FORM_CLASS | null | A class name |
-| FORM_METHOD | POST | GET / POST (for now) |
-| FULL_HTML_STRUCTURE | false | true / false |
-| TYPE_DETECTION | true | true / false |
+|:----------|:-------------:|:-------------------------|
+| empty_generated_field | true | ``bool`` true / false |
+| form_action | null | ``string`` The route / file form action |
+| form_class | null | ``string`` A class name |
+| form_method | POST | ``string`` GET / POST (for now) |
+| form_submit | false | ``bool`` true / false |
+| form_submit_value | null | ``string`` A value |
+| full_html_structure | false | ``bool`` true / false |
+| type_detection | true | ``bool`` true / false | 
 
-### EMPTY\_GENERATED\_FIELD
+### empty_generated_field
 
 This config rule will remove in-memory field when the "generate" method is call.
 ```php
 $config = new \FormGenerator\FormConfig([
-    'EMPTY_GENERATED_FIELD' => true // default is true
+    'empty_generated_field' => true // default is true
 ]);
 
 $form = new \FormGenerator\FormGenerator($config);
 $form->add('username');
-// <input type="text" id="field-username" name="username" value="">
+// <input type="text" id="field-username" name="username" value="" required="">
 $form->generate();
 
 $form->generate(); // null
 ```
 
-### FORM\_ACTION
+### form_action
    
 With this rule, you can define the action of the ``<form>``.
 Default value is "null".
 
-> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+> Note : This rule has no effect if the "full_html_structure" rule
 is not on "true" value. 
 
 ```php
 $config = new \FormGenerator\FormConfig([
-    'FULL_HTML_STRUCTURE' => true,
-    'FORM_ACTION' => '/home'
+    'full_html_structure' => true,
+    'form_action' => '/home'
 ]);
 
 $form = new \FormGenerator\FormGenerator($config);
@@ -151,18 +197,18 @@ $form->add('username');
 $form->generate(); // <form action="/home" method="POST">...
 ```
 
-### FORM\_CLASS
+### form_class
    
 With this rule, you can define the class of the ``<form>``.
 Default value is "null".
 
-> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+> Note : This rule has no effect if the "full_html_structure" rule
 is not on "true" value. 
 
 ```php
 $config = new \FormGenerator\FormConfig([
-    'FORM_CLASS' => 'super-class',
-    'FULL_HTML_STRUCTURE' => true
+    'form_class' => 'super-class',
+    'full_html_structure' => true
 ]);
 
 $form = new \FormGenerator\FormGenerator($config);
@@ -170,18 +216,18 @@ $form->add('username');
 $form->generate(); // <form action="" method="POST" class="super-class">...
 ```
 
-### FORM\_METHOD
+### form_method
 
 Set the method of the form. 
 Default value is "true".
 
-> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+> Note : This rule has no effect if the "full_html_structure" rule
 is not on "true" value. 
 
 ```php
 $config = new \FormGenerator\FormConfig([
-    'FULL_HTML_STRUCTURE' => true,
-    'FORM_METHOD' => 'GET'
+    'full_html_structure' => true,
+    'form_method' => 'GET'
 ]);
 
 $form = new \FormGenerator\FormGenerator($config);
@@ -189,30 +235,58 @@ $form->add('username');
 $form->generate(); // <form action="" method="GET">...
 ```
 
-### FORM_SUBMIT_VALUE
-Set the method of the form. 
-Default value is "true".
-
-> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+### form_submit
+Define if the form contains a "submit" input or not.
+Default is false.
+> Note : This rule has no effect if the "full_html_structure" rule
 is not on "true" value. 
 
 ```php
 $config = new \FormGenerator\FormConfig([
-    'FULL_HTML_STRUCTURE' => true,
-    'FORM_METHOD' => 'GET'
+    'full_html_structure' => true,
+    'form_submit' => true
 ]);
 
 $form = new \FormGenerator\FormGenerator($config);
 $form->add('username');
-$form->generate(); // <form action="" method="GET">...
+
+// <form method="POST" action="">
+//     <input type="text" id="field-username" name="username" value="" required="">
+//     <input type="submit">
+// </form>
+$form->generate();
 ```
-### FULL\_HTML\_STRUCTURE
+
+### form_submit_value
+Set the value of the "submit" input.
+Default value is null.
+
+> Note : This rule has no effect if the "full_html_structure" and "FORM_SUBMIT" rules
+are not on "true" value. 
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'full_html_structure' => true,
+    'FORM_SUBMIT' => true,
+    'form_submit_value' => 'Send !'
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('username');
+
+// <form method="POST" action="">
+//     <input type="text" id="field-username" name="username" value="" required="">
+//     <input type="submit" value="Send !">
+// </form>
+$form->generate();
+```
+### full_html_structure
 
 When this rule is activate, the "generate" method will return entire html form structure.
 
 ```php
 $config = new \FormGenerator\FormConfig([
-    'FULL_HTML_STRUCTURE' => true
+    'full_html_structure' => true
 ]);
 
 $form = new \FormGenerator\FormGenerator($config);
@@ -220,17 +294,56 @@ $form->add('username');
 $form->generate(); // <form action="" method="POST">...</form>
 ```
 
-### TYPE\_DETECTION
+### type_detection
 
 With this rule, if the name is a correct form type, it will be used for the type
 
 ```php
 $config = new \FormGenerator\FormConfig([
-    'TYPE_DETECTION' => true // default is true
+    'type_detection' => true // default is true
 ]);
 
 $form = new \FormGenerator\FormGenerator($config);
 $form->add('password');
-// <input type="password" id="field-password" name="password" value="">
+// <input type="password" id="field-password" name="password" value="" required="">
 $form->generate();
+```
+## Examples
+
+Making a login form with bootstrap template.
+
+```php
+require_once 'vendor/autoload.php';
+    
+$config = new \FormGenerator\FormConfig([
+    'full_html_structure' => true,
+    'form_submit' => true,
+    'form_submit_value' => 'Login',
+    'form_action' => '/home'
+]);
+
+$generator = new FormGenerator\FormGenerator($config);
+
+$form = $generator
+    ->add('username', null, [
+    'label' => 'Your username',
+    'placeholder' => 'Username',
+    'class' => 'form-control'
+])
+    ->add('password', null, [
+    'label' => 'Your password',
+    'placeholder' => 'Password',
+    'class' => 'form-control'
+])->generate();
+
+// <form method="POST" action="/home">
+//     <label for="field-username">Your username</label>
+//     <input type="text" id="field-username" name="username" value="" placeholder="Username" required="" class="form
+//-control">
+//     <label for="field-password">Your password</label>
+//     <input type="password" id="field-password" name="password" value="" placeholder="Password" required="" class=
+//"form-control">
+//     <input type="submit" value="Login">
+// </form>
+echo $form;
 ```

@@ -6,6 +6,8 @@
             "email": "contact.moon250@gmail.com"
         }
     ],
+    "license": "MIT",
+    "description": "FormGenerator is a class that generates forms in a very simple way.",
     "autoload": {
         "psr-4": {
             "FormGenerator\\": "src",

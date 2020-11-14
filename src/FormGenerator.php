@@ -86,25 +86,26 @@ class FormGenerator
         if ([] === $this->fields) {
             return null;
         }
-        $html_structure = $this->config->get('FULL_HTML_STRUCTURE');
-        $class = null !== $this->config->get('FORM_CLASS') ? " class=\"{$this->config->get('FORM_CLASS')}\"" : '';
-        $form = '';
 
-        if ($html_structure === true) {
-            $submitValue = $this->config->get('FORM_SUBMIT_VALUE')
-                ? $this->config->get('FORM_SUBMIT_VALUE') : '';
-            $submit = $this->config->get('FORM_SUBMIT') ? "\n    <input type=\"submit\"{$submitValue}>" : "";
+        $html_structure = $this->config->get('full_html_structure');
+        $class = null !== $this->config->get('form_class') ? " class=\"{$this->config->get('form_class')}\"" : '';
+
+        if (true === $html_structure) {
+            $submitValue = $this->config->get('form_submit_value')
+                ? $this->config->get('form_submit_value') : '';
+            $submit = $this->config->get('form_submit') ? "\n    <input type=\"submit\"{$submitValue}>" : '';
             $form = <<<HTML
-<form method="{$this->config->get('FORM_METHOD')}" action=""{$class}>
+<form method="{$this->config->get('form_method')}" action=""{$class}>
     {$this->getGeneratedFields()}{$submit}
 </form>
 HTML;
-        } elseif ($html_structure === false) {
+        } else {
             $form = $this->getGeneratedFields();
         }
-        if (true === $this->config->get('EMPTY_GENERATED_FIELD')) {
+        if (true === $this->config->get('empty_generated_field')) {
             $this->fields = [];
         }
+
         return $form;
     }
 
@@ -115,10 +116,15 @@ HTML;
      */
     private function select(array $field): string
     {
+        $select = '';
+        if (isset($field['label'])) {
+            $select .= $this->label($field);
+        }
         // Phpcs:disable
-        return <<<HTML
+        $select .= <<<HTML
 <select id="{$field['id']}" name="{$field['name']}[]" {$this->getRequired($field)}{$this->getClass($field)}>{$field['options']}\n</select>
 HTML;
+        return $select;
         //Phpcs:enable
     }
 
@@ -152,6 +158,7 @@ HTML;
 <input type="{$field['type']}" id="{$field['id']}" name="{$field['name']}" value="{$field['value']}"
 {$placeholder} {$this->getRequired($field)}{$this->getClass($field)}>
 HTML);
+
         return $return;
     }
 
@@ -162,7 +169,7 @@ HTML);
      */
     private function getType(string $name): string
     {
-        if (true === $this->config->get('TYPE_DETECTION')) {
+        if (true === $this->config->get('type_detection')) {
             if (\in_array($name, $this->types, true)) {
                 return $name;
             }
@@ -207,6 +214,7 @@ HTML);
                 $form .= "\n";
             }
         }
+
         return $form;
     }
 }

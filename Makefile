@@ -1,5 +1,5 @@
 composer.lock: composer.json
-	composer update
+	composer update --prefer-dist --no-suggest
 
 vendor:
 	composer install --prefer-dist --no-suggest

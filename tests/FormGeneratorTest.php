@@ -86,7 +86,7 @@ HTML;
     public function testConfigureOneOption()
     {
         $config = new FormConfig();
-        $config->set('TYPE_DETECTION', false);
+        $config->set('type_detection', false);
         $form = (new FormGenerator($config))->add('email')->generate();
         $html = '<input type="text" id="field-email" name="email" value="" required="">';
         $this->assertSame($html, $form);
@@ -95,10 +95,10 @@ HTML;
     public function testConfigureMultipleOptions()
     {
         $config = new FormConfig();
-        $config->set('TYPE_DETECTION', false);
-        $config->set('FULL_HTML_STRUCTURE', true);
-        $config->set('FORM_METHOD', 'GET');
-        $config->set('FORM_SUBMIT', true);
+        $config->set('type_detection', false);
+        $config->set('full_html_structure', true);
+        $config->set('form_method', 'GET');
+        $config->set('form_submit', true);
         $form = (new FormGenerator($config))->add('email')->generate();
         $html = <<<HTML
 <form method="GET" action="">
@@ -112,7 +112,7 @@ HTML;
     public function testAddFieldWithOption()
     {
         $form = $this->form->add('username', null, [
-            'label'       => "Nom d'utilisateur"
+            'label' => "Nom d'utilisateur"
         ])->generate();
         $html = <<<HTML
 <label for="field-username">Nom d'utilisateur</label>

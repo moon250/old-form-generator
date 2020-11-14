@@ -10,14 +10,14 @@ class FormConfig
      * @var mixed[]
      */
     private array $config = [
-        'FULL_HTML_STRUCTURE'   => false,
-        'TYPE_DETECTION'        => true,
-        'EMPTY_GENERATED_FIELD' => true,
-        'FORM_METHOD'           => 'POST',
-        'FORM_CLASS'            => null,
-        'FORM_ACTION'           => null,
-        'FORM_SUBMIT_VALUE' => null,
-        'FORM_SUBMIT' => false
+        'full_html_structure'   => false,
+        'type_detection'        => true,
+        'empty_generated_field' => true,
+        'form_method'           => 'POST',
+        'form_class'            => null,
+        'form_action'           => null,
+        'form_submit'           => false,
+        'form_submit_value'     => null
     ];
 
     /**
@@ -35,8 +35,8 @@ class FormConfig
     /**
      * Define a value for the correspondant key.
      *
-     * @param string $key   The key (no case sensitive)
-     * @param bool|string   $value Value to assign to the key
+     * @param string      $key   The key (no case sensitive)
+     * @param bool|string $value Value to assign to the key
      *
      * @throws FormConfigException Throw FormConfigException if the key not exists
      *
@@ -44,8 +44,8 @@ class FormConfig
      */
     public function set(string $key, $value): self
     {
-        $this->checkKey(mb_strtoupper($key));
-        $this->config[mb_strtoupper($key)] = $value;
+        $this->checkKey(mb_strtolower($key));
+        $this->config[mb_strtolower($key)] = $value;
 
         return $this;
     }
@@ -61,9 +61,9 @@ class FormConfig
      */
     public function get(string $key)
     {
-        $this->checkKey($key);
+        $this->checkKey(mb_strtolower($key));
 
-        return $this->config[$key];
+        return $this->config[mb_strtolower($key)];
     }
 
     private function checkKey(string $key): void

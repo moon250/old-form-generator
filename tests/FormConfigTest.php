@@ -29,18 +29,18 @@ class FormConfigTest extends TestCase
 
     public function testGetConfigWithCorrectKey()
     {
-        $this->assertTrue($this->config->get('TYPE_DETECTION'));
+        $this->assertTrue($this->config->get('type_detection'));
     }
 
     public function testSetConfigWithCorrectKey()
     {
-        $this->config->set('TYPE_DETECTION', false);
-        $this->assertFalse($this->config->get('TYPE_DETECTION'));
+        $this->config->set('type_detection', false);
+        $this->assertFalse($this->config->get('type_detection'));
     }
 
     public function testSetConfigIsCaseInsensitive()
     {
-        $this->config->set('type_detection', true);
-        $this->assertTrue($this->config->get('TYPE_DETECTION'));
+        $this->config->set('TYPE_DETECTION', true);
+        $this->assertTrue($this->config->get('type_detection'));
     }
 }
