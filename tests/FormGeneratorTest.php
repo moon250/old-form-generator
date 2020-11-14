@@ -52,7 +52,7 @@ class FormGeneratorTest extends TestCase
     {
         $this->form->add('users', new SelectType(['jean', 'jane']));
         $html = <<<HTML
-<select id="field-users" name="users" required="">
+<select id="field-users" name="users[]" required="">
     <option value="0">jean</option>
     <option value="1">jane</option>
 </select>
@@ -76,8 +76,11 @@ HTML;
         $html = '<input type="email" id="field-email" name="email" value="" required="">';
         $form2 = $this->form->add('date')->generate();
         $html2 = '<input type="date" id="field-date" name="date" value="" required="">';
+        $form3 = $this->form->add('password')->generate();
+        $html3 = '<input type="password" id="field-password" name="password" value="" required="">';
         $this->assertSame($html, $form1);
         $this->assertSame($html2, $form2);
+        $this->assertSame($html3, $form3);
     }
 
     public function testConfigureOneOption()
@@ -86,6 +89,23 @@ HTML;
         $config->set('TYPE_DETECTION', false);
         $form = (new FormGenerator($config))->add('email')->generate();
         $html = '<input type="text" id="field-email" name="email" value="" required="">';
+        $this->assertSame($html, $form);
+    }
+
+    public function testConfigureMultipleOptions()
+    {
+        $config = new FormConfig();
+        $config->set('TYPE_DETECTION', false);
+        $config->set('FULL_HTML_STRUCTURE', true);
+        $config->set('FORM_METHOD', 'GET');
+        $config->set('FORM_SUBMIT', true);
+        $form = (new FormGenerator($config))->add('email')->generate();
+        $html = <<<HTML
+<form method="GET" action="">
+    <input type="text" id="field-email" name="email" value="" required="">
+    <input type="submit">
+</form>
+HTML;
         $this->assertSame($html, $form);
     }
 

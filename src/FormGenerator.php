@@ -15,29 +15,29 @@ class FormGenerator
      * @var string[]
      */
     private array $types = [
-        'button',
-        'checkbox',
-        'color',
-        'date',
-        'datetime-local',
-        'email',
-        'file',
-        'hidden',
-        'image',
-        'month',
-        'number',
-        'password',
-        'radio',
-        'range',
-        'reset',
-        'search',
-        'submit',
-        'tel',
-        'text',
-        'time',
-        'url',
-        'week'
-    ];
+            'button',
+            'checkbox',
+            'color',
+            'date',
+            'datetime-local',
+            'email',
+            'file',
+            'hidden',
+            'image',
+            'month',
+            'number',
+            'password',
+            'radio',
+            'range',
+            'reset',
+            'search',
+            'submit',
+            'tel',
+            'text',
+            'time',
+            'url',
+            'week'
+        ];
 
     private FormConfig $config;
 
@@ -78,22 +78,33 @@ class FormGenerator
 
     /**
      * Generate the form.
+     *
+     * @throws Exception\FormConfigException
      */
-    public function generate(): string
+    public function generate(): ?string
     {
-        $form = '';
-        foreach ($this->fields as $key => $field) {
-            if ('select' === $field['type']) {
-                $form = $form . $this->select($field);
-            } else {
-                $form = $form . $this->input($field);
-            }
-            if (($key + 1) < \count($this->fields)) {
-                $form .= "\n";
-            }
+        if ([] === $this->fields) {
+            return null;
         }
-        $this->fields = [];
+        $html_structure = $this->config->get('FULL_HTML_STRUCTURE');
+        $class = null !== $this->config->get('FORM_CLASS') ? " class=\"{$this->config->get('FORM_CLASS')}\"" : '';
+        $form = '';
 
+        if ($html_structure === true) {
+            $submitValue = $this->config->get('FORM_SUBMIT_VALUE')
+                ? $this->config->get('FORM_SUBMIT_VALUE') : '';
+            $submit = $this->config->get('FORM_SUBMIT') ? "\n    <input type=\"submit\"{$submitValue}>" : "";
+            $form = <<<HTML
+<form method="{$this->config->get('FORM_METHOD')}" action=""{$class}>
+    {$this->getGeneratedFields()}{$submit}
+</form>
+HTML;
+        } elseif ($html_structure === false) {
+            $form = $this->getGeneratedFields();
+        }
+        if (true === $this->config->get('EMPTY_GENERATED_FIELD')) {
+            $this->fields = [];
+        }
         return $form;
     }
 
@@ -104,9 +115,11 @@ class FormGenerator
      */
     private function select(array $field): string
     {
+        // Phpcs:disable
         return <<<HTML
-<select id="{$field['id']}" name="{$field['name']}" {$this->getRequired($field)}{$this->getClass($field)}>{$field['options']}\n</select>
+<select id="{$field['id']}" name="{$field['name']}[]" {$this->getRequired($field)}{$this->getClass($field)}>{$field['options']}\n</select>
 HTML;
+        //Phpcs:enable
     }
 
     /**
@@ -132,18 +145,13 @@ HTML;
         if (isset($field['label'])) {
             $return .= $this->label($field);
         }
-        $placeholder = isset($field['placeholder']) && is_string($field['placeholder'])
+        $placeholder = isset($field['placeholder']) && \is_string($field['placeholder'])
             ? " placeholder=\"{$field['placeholder']}\""
             : '';
-        $return .= str_replace("\n", '', "<input 
-type=\"{$field['type']}\" 
-id=\"{$field['id']}\" 
-name=\"{$field['name']}\" 
-value=\"{$field['value']}\"
-{$placeholder} 
-{$this->getRequired($field)}
-{$this->getClass($field)}>");
-
+        $return .= str_replace("\n", '', <<<HTML
+<input type="{$field['type']}" id="{$field['id']}" name="{$field['name']}" value="{$field['value']}"
+{$placeholder} {$this->getRequired($field)}{$this->getClass($field)}>
+HTML);
         return $return;
     }
 
@@ -167,10 +175,9 @@ value=\"{$field['value']}\"
     }
 
     /**
-     * Return if the field is required
+     * Return if the field is required.
      *
      * @param string[]|bool[] $field
-     * @return string
      */
     private function getRequired(array $field): string
     {
@@ -178,12 +185,28 @@ value=\"{$field['value']}\"
     }
 
     /**
-     * Return the class of the field
+     * Return the class of the field.
+     *
      * @param string[] $field
-     * @return string
      */
     private function getClass(array $field): string
     {
-        return isset($field['class']) && is_string($field['class']) ? " class=\"{$field['class']}\"" : '';
+        return isset($field['class']) && \is_string($field['class']) ? " class=\"{$field['class']}\"" : '';
+    }
+
+    private function getGeneratedFields(): string
+    {
+        $form = '';
+        foreach ($this->fields as $key => $field) {
+            if ('select' === $field['type']) {
+                $form = $form . $this->select($field);
+            } else {
+                $form = $form . $this->input($field);
+            }
+            if (($key + 1) < \count($this->fields)) {
+                $form .= "\n";
+            }
+        }
+        return $form;
     }
 }

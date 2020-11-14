@@ -6,6 +6,15 @@ FormGenerator is a class that generates forms in a very simple way.
 - [Basic usage](#Basic-Usage)
 - [Types](#Types)
 - [Config](#Config)
+    - [Config Rules](#Config-Rules)
+    - [EMPTY_GENERATED_FIELD](#EMPTY_GENERATED_FIELD)
+    - [FORM_ACTION](#FORM_ACTION)
+    - [FORM_CLASS](#FORM_CLASS)
+    - [FORM_METHOD](#FORM_METHOD)
+    - [FORM_SUBMIT_VALUE](#FORM_SUBMIT_VALUE)
+    - [FULL_HTML_STRUCTURE](#FULL_HTML_STRUCTURE)
+    - [TYPE_DETECTION](#TYPE_DETECTION)
+    
 
 ## Basic usage
 Start by instancing the FormGenerator class.
@@ -93,4 +102,135 @@ $config->set('type_detection', false);
 
 // Echo "true"
 echo $config->get('TYPE_DETECTION');
+```
+
+### Config Rules
+
+All the config rules can be changed are listed here :
+
+| Rule Name | Default value | Values can be attributed |
+|---|---|---|
+| EMPTY_GENERATED_FIELD | true | true / false |
+| FORM_CLASS | null | A class name |
+| FORM_METHOD | POST | GET / POST (for now) |
+| FULL_HTML_STRUCTURE | false | true / false |
+| TYPE_DETECTION | true | true / false |
+
+### EMPTY\_GENERATED\_FIELD
+
+This config rule will remove in-memory field when the "generate" method is call.
+```php
+$config = new \FormGenerator\FormConfig([
+    'EMPTY_GENERATED_FIELD' => true // default is true
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('username');
+// <input type="text" id="field-username" name="username" value="">
+$form->generate();
+
+$form->generate(); // null
+```
+
+### FORM\_ACTION
+   
+With this rule, you can define the action of the ``<form>``.
+Default value is "null".
+
+> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+is not on "true" value. 
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'FULL_HTML_STRUCTURE' => true,
+    'FORM_ACTION' => '/home'
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('username');
+$form->generate(); // <form action="/home" method="POST">...
+```
+
+### FORM\_CLASS
+   
+With this rule, you can define the class of the ``<form>``.
+Default value is "null".
+
+> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+is not on "true" value. 
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'FORM_CLASS' => 'super-class',
+    'FULL_HTML_STRUCTURE' => true
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('username');
+$form->generate(); // <form action="" method="POST" class="super-class">...
+```
+
+### FORM\_METHOD
+
+Set the method of the form. 
+Default value is "true".
+
+> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+is not on "true" value. 
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'FULL_HTML_STRUCTURE' => true,
+    'FORM_METHOD' => 'GET'
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('username');
+$form->generate(); // <form action="" method="GET">...
+```
+
+### FORM_SUBMIT_VALUE
+Set the method of the form. 
+Default value is "true".
+
+> Note : This rule has no effect if the "FULL_HTML_STRUCTURE" rule
+is not on "true" value. 
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'FULL_HTML_STRUCTURE' => true,
+    'FORM_METHOD' => 'GET'
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('username');
+$form->generate(); // <form action="" method="GET">...
+```
+### FULL\_HTML\_STRUCTURE
+
+When this rule is activate, the "generate" method will return entire html form structure.
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'FULL_HTML_STRUCTURE' => true
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('username');
+$form->generate(); // <form action="" method="POST">...</form>
+```
+
+### TYPE\_DETECTION
+
+With this rule, if the name is a correct form type, it will be used for the type
+
+```php
+$config = new \FormGenerator\FormConfig([
+    'TYPE_DETECTION' => true // default is true
+]);
+
+$form = new \FormGenerator\FormGenerator($config);
+$form->add('password');
+// <input type="password" id="field-password" name="password" value="">
+$form->generate();
 ```
