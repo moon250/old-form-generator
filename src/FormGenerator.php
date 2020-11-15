@@ -124,6 +124,7 @@ HTML;
         $select .= <<<HTML
 <select id="{$field['id']}" name="{$field['name']}[]" {$this->getRequired($field)}{$this->getClass($field)}>{$field['options']}\n</select>
 HTML;
+
         return $select;
         //Phpcs:enable
     }
