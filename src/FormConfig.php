@@ -10,14 +10,15 @@ class FormConfig
      * @var mixed[]
      */
     private array $config = [
-        'full_html_structure'   => false,
-        'type_detection'        => true,
         'empty_generated_field' => true,
-        'form_method'           => 'POST',
-        'form_class'            => null,
         'form_action'           => null,
-        'form_submit'           => false,
-        'form_submit_value'     => null
+        'form_class'            => null,
+        'form_id'               => null,
+        'form_method'           => 'POST',
+        'form_submit'           => true,
+        'form_submit_value'     => null,
+        'full_html_structure'   => false,
+        'type_detection'        => true
     ];
 
     /**

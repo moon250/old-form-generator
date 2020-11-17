@@ -153,14 +153,14 @@ All the config rules can be changed are listed here :
 
 | Rule Name | Default value | Values can be attributed |
 |:----------|:-------------:|:-------------------------|
-| empty_generated_field | true | ``bool`` true / false |
-| form_action | null | ``string`` The route / file form action |
-| form_class | null | ``string`` A class name |
-| form_method | POST | ``string`` GET / POST (for now) |
-| form_submit | false | ``bool`` true / false |
-| form_submit_value | null | ``string`` A value |
-| full_html_structure | false | ``bool`` true / false |
-| type_detection | true | ``bool`` true / false | 
+| [empty_generated_field](#empty_generated_field) | true | ``bool`` true / false |
+| [form_action](#form_action) | null | ``string`` The route / file form action |
+| [form_class](#form_class) | null | ``string`` A class name |
+| [form_method](#form_method) | POST | ``string`` GET / POST (for now) |
+| [form_submit](#form_submit) | false | ``bool`` true / false |
+| [form_submit_value](#form_submit_value) | null | ``string`` A value |
+| [full_html_structure](#full_html_structure) | false | ``bool`` true / false |
+| [type_detection](#type_detection) | true | ``bool`` true / false | 
 
 ### empty_generated_field
 
@@ -219,7 +219,7 @@ $form->generate(); // <form action="" method="POST" class="super-class">...
 ### form_method
 
 Set the method of the form. 
-Default value is "true".
+Default value is "POST".
 
 > Note : This rule has no effect if the "full_html_structure" rule
 is not on "true" value. 
@@ -237,7 +237,7 @@ $form->generate(); // <form action="" method="GET">...
 
 ### form_submit
 Define if the form contains a "submit" input or not.
-Default is false.
+Default is "true".
 > Note : This rule has no effect if the "full_html_structure" rule
 is not on "true" value. 
 
@@ -259,7 +259,7 @@ $form->generate();
 
 ### form_submit_value
 Set the value of the "submit" input.
-Default value is null.
+Default value is "null".
 
 > Note : This rule has no effect if the "full_html_structure" and "FORM_SUBMIT" rules
 are not on "true" value. 
@@ -267,7 +267,7 @@ are not on "true" value.
 ```php
 $config = new \FormGenerator\FormConfig([
     'full_html_structure' => true,
-    'FORM_SUBMIT' => true,
+    'form_submit' => true,
     'form_submit_value' => 'Send !'
 ]);
 
@@ -283,6 +283,7 @@ $form->generate();
 ### full_html_structure
 
 When this rule is activate, the "generate" method will return entire html form structure.
+Default value is "false".
 
 ```php
 $config = new \FormGenerator\FormConfig([
@@ -296,7 +297,7 @@ $form->generate(); // <form action="" method="POST">...</form>
 
 ### type_detection
 
-With this rule, if the name is a correct form type, it will be used for the type
+With this rule, if the name is a correct form type, it will be used for the type.
 
 ```php
 $config = new \FormGenerator\FormConfig([
@@ -317,7 +318,6 @@ require_once 'vendor/autoload.php';
     
 $config = new \FormGenerator\FormConfig([
     'full_html_structure' => true,
-    'form_submit' => true,
     'form_submit_value' => 'Login',
     'form_action' => '/home'
 ]);
@@ -345,5 +345,5 @@ $form = $generator
 //"form-control">
 //     <input type="submit" value="Login">
 // </form>
-echo $form;
+echo '<div class="form-group">' . $form . '</div>';
 ```
