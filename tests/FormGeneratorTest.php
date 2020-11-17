@@ -121,6 +121,21 @@ HTML;
         $this->assertSame($html, $form);
     }
 
+    public function testSelectWithLabel()
+    {
+        $this->form->add('users', new SelectType(['jean', 'jane']), [
+            'label' => 'Test !'
+        ]);
+        $html = <<<HTML
+<label for="field-users">Test !</label>
+<select id="field-users" name="users[]" required="">
+    <option value="0">jean</option>
+    <option value="1">jane</option>
+</select>
+HTML;
+        $this->assertSame($html, $this->form->generate());
+    }
+
     public function testAddFieldWithMultipleOptions()
     {
         $form = $this->form->add('username', null, [
@@ -150,5 +165,20 @@ HTML;
         ]);
         $html = '<input type="text" id="field-username" name="username" value="" required="" class="test">';
         $this->assertSame($html, $this->form->generate());
+    }
+
+    public function testAddFormId()
+    {
+        $config = new FormConfig();
+        $config->set('full_html_structure', true);
+        $config->set('form_id', 'azre');
+        $form = (new FormGenerator($config))->add('email')->generate();
+        $html = <<<HTML
+<form method="POST" action="" id="azre">
+    <input type="email" id="field-email" name="email" value="" required="">
+    <input type="submit">
+</form>
+HTML;
+        $this->assertSame($html, $form);
     }
 }

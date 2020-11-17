@@ -94,8 +94,9 @@ class FormGenerator
             $submitValue = $this->config->get('form_submit_value')
                 ? $this->config->get('form_submit_value') : '';
             $submit = $this->config->get('form_submit') ? "\n    <input type=\"submit\"{$submitValue}>" : '';
+            $id = $this->config->get('form_id') ? ' id="' . $this->config->get('form_id') . '"' : '';
             $form = <<<HTML
-<form method="{$this->config->get('form_method')}" action=""{$class}>
+<form method="{$this->config->get('form_method')}" action=""{$class}{$id}>
     {$this->getGeneratedFields()}{$submit}
 </form>
 HTML;
@@ -116,10 +117,8 @@ HTML;
      */
     private function select(array $field): string
     {
-        $select = '';
-        if (isset($field['label'])) {
-            $select .= $this->label($field);
-        }
+        $select = isset($field['label']) ? $this->label($field) :'';
+
         // Phpcs:disable
         $select .= <<<HTML
 <select id="{$field['id']}" name="{$field['name']}[]" {$this->getRequired($field)}{$this->getClass($field)}>{$field['options']}\n</select>
