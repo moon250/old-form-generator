@@ -93,7 +93,9 @@ class FormGenerator
         if (true === $html_structure) {
             $submitValue = $this->config->get('form_submit_value')
             ? $this->config->get('form_submit_value') : '';
-            $submit = $this->config->get('form_submit') ? "\n    <input type=\"submit\"{$submitValue}>" : '';
+            $submit = $this->config->get('form_submit') && $html_structure ?
+                "\n    <input type=\"submit\"{$submitValue}>" :
+                '';
             $id = $this->config->get('form_id') ? ' id="' . $this->config->get('form_id') . '"' : '';
             $form = <<<HTML
 <form method="{$this->config->get('form_method')}" action=""{$class}{$id}>

@@ -30,7 +30,7 @@ $form = new \FormGenerator\FormGenerator();
 ```
 
 Next, you can use this object to add some fields with the "add" method. This method took 2 parameters, one is the name, and
-the second parameter is an optional type. The default type is text.
+the second parameter is for define the type. This parameter is optionnaly. The default type is text.
 
 ```php
 $form = new \FormGenerator\FormGenerator();
@@ -46,19 +46,19 @@ $form = new \FormGenerator\FormGenerator();
 // Generate method will return only form fields (input, select, ...)
 $html = $form->add('username')->generate();
 
-// <input type="text" id="field-username" name="username" value="">
+// <input type="text" id="field-username" name="username" value="" required="">
 echo $html;
 ```
 
 ## Types
 
-By default, the type is "text". You can change this bypassed another parameter in the "add" method.
+By default, the type is "text". You can change this by pass another parameter in the "add" method.
 
 ```php
 $form = new \FormGenerator\FormGenerator();
 
 // Will generate an input with "email" type.
-// <input type="email" id="field-user-email" name="user-email" value="">
+// <input type="email" id="field-user-email" name="user-email" value="" required="">
 $form->add('user-email', 'email')->generate();
 ```
 
@@ -68,9 +68,9 @@ If the name of your field ends with "_at", the type of this field will be "date"
 $form = new \FormGenerator\FormGenerator();
 
 // The input is generated with a date type
-// <input type="date" id="field-created_at" name="created_at" value="">
+// <input type="date" id="field-created_at" name="created_at" value="" required="">
 $form->add('created_at')->generate();
-// <input type="date" id="field-updated_at" name="updated_at" value="">
+// <input type="date" id="field-updated_at" name="updated_at" value="" required="">
 $form->add('updated_at')->generate();
 ```
 
@@ -111,7 +111,7 @@ $form->add('username', null, [
 Form-generator is fully configurable. You can for example disable the type detection with the name.
 ```php
 $config = new \FormGenerator\FormConfig();
-$config->set('TYPE_DETECTION', false);
+$config->set('type_detection', false);
 $form = new \FormGenerator\FormGenerator($config);
 
 // <input type="text" id="field-email" name="email" value="" required="">
@@ -120,31 +120,31 @@ $form->add('email')->generate();
 You can use "get" method to see the value of a key
 ```php
 $config = new \FormGenerator\FormConfig();
-$config->get('TYPE_DETECTION'); // true
+$config->get('type_detection'); // true
 ```
 
 Key names are case-insensitive.
 
 ```php
 $config = new \FormGenerator\FormConfig();
-$config->set('type_detection', false);
+$config->set('TYPE_DETECTION', false);
 
 // Echo "false"
-echo $config->get('TYPE_DETECTION');
+echo $config->get('type_detection');
 ```
 
 You can also pass an array to the FormConfig constructor for define config rules.
 
 ```php
 $config = new \FormGenerator\FormConfig([
-    'TYPE_DETECTION' => false,
-    'EMPTY_GENERATED_FIELDS' => false
+    'type_detection' => false,
+    'empty_generated_fields' => false
 ]);
 
 // Echo "false"
-echo $config->get('TYPE_DETECTION');
+echo $config->get('type_detection');
 // Echo "false"
-echo $config->get('EMPTY_GENERATED_FIELDS');
+echo $config->get('empty_generated_fields');
 ```
 
 ### Config Rules
@@ -165,6 +165,8 @@ All the config rules can be changed are listed here :
 ### empty_generated_field
 
 This config rule will remove in-memory field when the "generate" method is call.
+Default value is "true".
+
 ```php
 $config = new \FormGenerator\FormConfig([
     'empty_generated_field' => true // default is true
@@ -261,7 +263,7 @@ $form->generate();
 Set the value of the "submit" input.
 Default value is "null".
 
-> Note : This rule has no effect if the "full_html_structure" and "FORM_SUBMIT" rules
+> Note : This rule has no effect if the "full_html_structure" and "form_submit" rules
 are not on "true" value. 
 
 ```php
@@ -311,7 +313,7 @@ $form->generate();
 ```
 ## Examples
 
-Making a login form with bootstrap template.
+Making a login form using bootstrap template.
 
 ```php
 require_once 'vendor/autoload.php';
