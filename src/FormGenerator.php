@@ -63,7 +63,7 @@ class FormGenerator
         'id'    => "field-{$name}",
         'value' => '',
         'type'  => $type
-    ];
+        ];
         if (\is_object($type)) {
             $field['type'] = $type->getType();
             if ('select' === $field['type']) {
