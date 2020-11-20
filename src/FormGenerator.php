@@ -9,12 +9,12 @@ class FormGenerator
     /**
      * @var array[]
      */
-private array $fields;
+    private array $fields;
 
     /**
      * @var string[]
      */
-private array $types = [
+    private array $types = [
             'button',
             'checkbox',
             'color',
@@ -39,12 +39,12 @@ private array $types = [
             'week'
         ];
 
-private FormConfig $config;
+    private FormConfig $config;
 
-public function __construct(?FormConfig $config = null)
-{
-    $this->config = null !== $config ? $config : new FormConfig();
-}
+    public function __construct(?FormConfig $config = null)
+    {
+        $this->config = null !== $config ? $config : new FormConfig();
+    }
 
     /**
      * Add a field to the form.
@@ -55,67 +55,67 @@ public function __construct(?FormConfig $config = null)
      *
      * @return FormGenerator
      */
-public function add(string $name, $type = null, array $options = []): self
-{
-    $type = isset($type) ? $type : $this->getType($name);
-    $field = [
+    public function add(string $name, $type = null, array $options = []): self
+    {
+        $type = isset($type) ? $type : $this->getType($name);
+        $field = [
         'name'  => $name,
         'id'    => "field-{$name}",
         'value' => '',
         'type'  => $type
     ];
-    if (\is_object($type)) {
-        $field['type'] = $type->getType();
-        if ('select' === $field['type']) {
-            $field['options'] = $type->getData();
+        if (\is_object($type)) {
+            $field['type'] = $type->getType();
+            if ('select' === $field['type']) {
+                $field['options'] = $type->getData();
+            }
         }
-    }
-    $field = array_merge($field, $options);
-    $this->fields[] = $field;
+        $field = array_merge($field, $options);
+        $this->fields[] = $field;
 
-    return $this;
-}
+        return $this;
+    }
 
     /**
      * Generate the form.
      *
      * @throws Exception\FormConfigException
      */
-public function generate(): ?string
-{
-    if ([] === $this->fields) {
-        return null;
-    }
+    public function generate(): ?string
+    {
+        if ([] === $this->fields) {
+            return null;
+        }
 
-    $html_structure = $this->config->get('full_html_structure');
-    $class = null !== $this->config->get('form_class') ? " class=\"{$this->config->get('form_class')}\"" : '';
+        $html_structure = $this->config->get('full_html_structure');
+        $class = null !== $this->config->get('form_class') ? " class=\"{$this->config->get('form_class')}\"" : '';
 
-    if (true === $html_structure) {
-        $submitValue = $this->config->get('form_submit_value')
+        if (true === $html_structure) {
+            $submitValue = $this->config->get('form_submit_value')
             ? $this->config->get('form_submit_value') : '';
-        $submit = $this->config->get('form_submit') ? "\n    <input type=\"submit\"{$submitValue}>" : '';
-        $id = $this->config->get('form_id') ? ' id="' . $this->config->get('form_id') . '"' : '';
-        $form = <<<HTML
+            $submit = $this->config->get('form_submit') ? "\n    <input type=\"submit\"{$submitValue}>" : '';
+            $id = $this->config->get('form_id') ? ' id="' . $this->config->get('form_id') . '"' : '';
+            $form = <<<HTML
 <form method="{$this->config->get('form_method')}" action=""{$class}{$id}>
     {$this->getGeneratedFields()}{$submit}
 </form>
 HTML;
-    } else {
-        $form = $this->getGeneratedFields();
-    }
-    if (true === $this->config->get('empty_generated_field')) {
-        $this->fields = [];
-    }
+        } else {
+            $form = $this->getGeneratedFields();
+        }
+        if (true === $this->config->get('empty_generated_field')) {
+            $this->fields = [];
+        }
 
-    return $form;
-}
+        return $form;
+    }
 
     /**
      * Generate a select with correct parameters and options given in parameters.
      *
      * @param string[] $field Arrays contains parameters and options
      */
-private function select(array $field): string
+    private function select(array $field): string
     {
         $select = isset($field['label']) ? $this->label($field) : '';
 
