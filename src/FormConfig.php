@@ -29,7 +29,7 @@ class FormConfig
     public function __construct(array $config = [])
     {
         foreach ($config as $key => $value) {
-            $config[$key] = $value;
+            $this->config[$key] = $value;
         }
     }
 
