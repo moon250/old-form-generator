@@ -5,6 +5,7 @@
 FormGenerator is a class that generates forms in a very simple way.
 
 # Table of contents
+- [Installation](#Installation)
 - [Basic usage](#Basic-Usage)
 - [Types](#Types)
 - [Options](#Options)
@@ -20,6 +21,11 @@ FormGenerator is a class that generates forms in a very simple way.
     - [type_detection](#type_detection)
 - [Examples](#Examples)
     
+## Installation 
+You can use composer for install this package.
+```
+composer require moon250/form-generator 
+```
 
 ## Basic Usage
 Start by instancing the FormGenerator class.
