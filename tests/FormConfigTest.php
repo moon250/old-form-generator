@@ -43,4 +43,12 @@ class FormConfigTest extends TestCase
         $this->config->set('TYPE_DETECTION', true);
         $this->assertTrue($this->config->get('type_detection'));
     }
+
+    public function testPassArrayToConstructor()
+    {
+        $config = new FormConfig([
+            'full_html_structure' => true
+        ]);
+        $this->assertTrue($config->get('full_html_structure'));
+    }
 }
