@@ -11,34 +11,6 @@ class FormGenerator
      */
     private array $fields;
 
-    /**
-     * @var string[]
-     */
-    private array $types = [
-            'button',
-            'checkbox',
-            'color',
-            'date',
-            'datetime-local',
-            'email',
-            'file',
-            'hidden',
-            'image',
-            'month',
-            'number',
-            'password',
-            'radio',
-            'range',
-            'reset',
-            'search',
-            'submit',
-            'tel',
-            'text',
-            'time',
-            'url',
-            'week'
-        ];
-
     private FormConfig $config;
 
     public function __construct(?FormConfig $config = null)
@@ -59,10 +31,10 @@ class FormGenerator
     {
         $type = isset($type) ? $type : $this->getType($name);
         $field = [
-        'name'  => $name,
-        'id'    => "field-{$name}",
-        'value' => '',
-        'type'  => $type
+            'name'  => $name,
+            'id'    => "field-{$name}",
+            'value' => '',
+            'type'  => $type
         ];
         if (\is_object($type)) {
             $field['type'] = $type->getType();
@@ -172,12 +144,7 @@ HTML);
     private function getType(string $name): string
     {
         if (true === $this->config->get('type_detection')) {
-            if (\in_array($name, $this->types, true)) {
-                return $name;
-            }
-            if (isset(explode('_', $name)[1]) && 'at' === explode('_', $name)[1]) {
-                return 'date';
-            }
+            return (new FormTypeHandler())->typeDetection($name);
         }
 
         return 'text';

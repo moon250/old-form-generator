@@ -7,10 +7,6 @@ vendor:
 .PHONY: install
 install: vendor
 
-.PHONY: server
-server: install
-	php -S localhost:8000 -t public/ -d display_errors=1
-
 .PHONY: format
 format: install
 	vendor\bin\phpcs

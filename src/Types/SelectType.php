@@ -33,4 +33,11 @@ class SelectType implements FormTypeInterface
 
         return $return;
     }
+
+    public function setData($data): FormTypeInterface
+    {
+        $this->options = $data;
+
+        return $this;
+    }
 }
